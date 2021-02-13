@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat.startActivity
 abstract class  DataIntent
 data class Data  ( val string :String? ,  val intent : Intent? ) :DataIntent(   )
 
-fun parse(string: String, context: Activity): String?   {
+fun parse(string: String, context: Activity): String   {
     val error = "je n'ai pas compris"
     return when {
     Regex("[ ]*ouvre .+").matches(string) -> {
@@ -88,7 +88,7 @@ fun parse(string: String, context: Activity): String?   {
 }
 
 fun Context.call (phoneNumber : String ){
-    startActivity(Intent(ACTION_CALL).apply {
+    startActivity(Intent(ACTION_DIAL).apply {
         data = Uri.parse("tel:$phoneNumber")
     } )
 }
