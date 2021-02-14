@@ -13,15 +13,18 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,14 +39,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-           /* ActivityCompat.requestPermissions(this, arrayOf(READ_CONTACTS , CALL_PHONE ),0); */
+           ActivityCompat.requestPermissions(this, arrayOf(READ_CONTACTS , CALL_PHONE ),0);
 
 
 
         setContent {
             MyAssistantTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
+                Surface( color = MaterialTheme.colors.background) {
                     View()
                 }
             }
@@ -55,9 +57,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-
-
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
              /*   1 -> {
@@ -84,11 +83,12 @@ class MainActivity : AppCompatActivity() {
 @SuppressLint("NewApi")
 @Composable
 fun View() {
-    val context = AmbientContext.current as Activity
+    val context = LocalContext.current   as Activity
 
     val list = mutableListOf<Message>()
-    var textField by savedInstanceState { "" }
-    var boolean by savedInstanceState { true }
+
+    var textField by rememberSaveable { mutableStateOf("" ) }
+    var boolean by rememberSaveable { mutableStateOf(true  ) }
     Scaffold(topBar = {
         TopAppBar() {
             Text(text = stringResource(id = R.string.app_name))
@@ -97,7 +97,7 @@ fun View() {
         Box(Modifier.fillMaxSize()) {
             LazyColumn() {
                 if (boolean) {
-                    items(list.toList()) {
+                    items(list ) {
                         Box(Modifier.fillMaxWidth()) {
                             Surface(Modifier.align(if (it.isresquest) Alignment.TopStart else Alignment.TopEnd)) {
                                 Text(it.data)
@@ -116,7 +116,8 @@ fun View() {
                     }
                     boolean = true
                 }) {
-                    Text(text = "Envoyer")
+                    Text(text =  "Envoyer" )
+
 
                 }
             }

@@ -6,39 +6,7 @@ import android.util.Log
 
 import android.provider.ContactsContract
 
-/*
-fun conctac( ee : ContentResolver ) {
-    val phones = ee.query(
-        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-        null,
-        null,
-        null,
-        null
-    )!!
 
-    // Loop Through All The Numbers
-
-    // Loop Through All The Numbers
-    while (phones.moveToNext()) {
-        val name =
-            phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-        var phoneNumber =
-            phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-
-
-
-    }
-
-    // Get The Contents of Hash Map in Log
-
-    // Get The Contents of Hash Map in Log
-    for ((key, value) in namePhoneMap.entrySet()) {
-        Log.d(TAG, "Phone :$key")
-        Log.d(TAG, "Name :$value")
-    }
-
-    phones.close()
-}*/
 
 
 data class Contact(val id: String, val name: String, val phone: List<String>)
