@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.myassistant.ui.theme.MyAssistantTheme
 import com.example.myassistant.ui.theme.shapes
 import java.time.LocalDateTime
@@ -54,30 +55,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-             /*   1 -> {
-                    val contactUri = data?.data
-                    val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                    contentResolver.query(contactUri!!, projection, null, null, null)
-                        .use { cursor ->
-                            // If the cursor returned is valid, get the phone number
-                            if (cursor!!.moveToFirst()) {
-                                val numberIndex =
-                                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                                val number = cursor.getString(numberIndex)
-                                Log.i("phonenumbre", number)
-
-                            }
-                        }
-                    }
-                }*/
-            }
-        }
-    }
 }
 
 @SuppressLint("NewApi")
@@ -94,7 +71,7 @@ fun View() {
             Text(text = stringResource(id = R.string.app_name))
         }
         Box(Modifier.fillMaxSize()) {
-            LazyColumn() {
+            LazyColumn {
                 if (boolean) {
                     items(list) {
                         Box(Modifier.fillMaxWidth()) {
@@ -108,25 +85,25 @@ fun View() {
                                     ) {
                                         Text(it.data) /*...*/
                                     }
-
                                 }
-
-
-
                             }
                         }
                     }
                 }
             }
             Row(Modifier.align(Alignment.BottomStart)) {
-                TextField(value = textField, onValueChange = { textField = it })
+                TextField(value = textField, onValueChange = { textField = it } , label = {Text("Enter un command")})
                 Button(onClick = {
                     boolean = false
                     list.add(Message(textField, LocalDateTime.now(), true))
                     val a = parse(textField, context)
                     list.add(Message( a.string , LocalDateTime.now(), false))
                     boolean = true
-                    a.intent?.let { context.startActivity(it) }
+                    a.intent?.run  {
+                        resolveActivity(context.packageManager)?.let {
+                            context.startActivity(this )
+                        }
+                    }
 
                 }) {
                     Text(text = "Envoyer")

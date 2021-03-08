@@ -7,6 +7,7 @@ import android.content.Intent.ACTION_CALL
 import android.content.Intent.ACTION_DIAL
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.AlarmClock
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils
 import android.util.Log
@@ -22,9 +23,8 @@ sealed class DataIntent()
 data class Data(val string: String, val intent: Intent? = null) : DataIntent()
 
 fun parse(string: String, context: Activity) :Data =
-    Regex("[ ]*crée[ ]+une[ ]+arlame(.*)").matchEntire(string)?.run {
-
-        return@run Data("" )
+    Regex("[ ]*crée[ ]+une[ ]+alarme[ ]+pour[ ]+(.*)[ ]*").matchEntire(string)?.run {
+        return@run Regex("([0-9]+)?j[ ]+([0-9]{1,2})?h[ ]+([0-9]{1,2})?m(?:[ ]+ cont          ) ").matchEntire(groupValues.last()) .run {return@run Data("")   }
     } ?: Regex("[ ]*ouvre[ ]+(.+)[ ]*").matchEntire(string)?.run {
         val value = groupValues.last()
         val a = context.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
@@ -85,3 +85,15 @@ fun parse(string: String, context: Activity) :Data =
     } ?: Data(error )
 
 fun phoneIntent(phoneNumber: String) = Intent(ACTION_CALL, Uri.parse("tel:$phoneNumber"))
+
+
+fun createAlarm(message: String, hour: Int, minutes: Int) {
+    val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
+        putExtra(AlarmClock.EXTRA_DAYS , "")
+        putExtra(AlarmClock.EXTRA_MESSAGE, message)
+        putExtra(AlarmClock.EXTRA_HOUR, hour)
+        putExtra(AlarmClock.EXTRA_MINUTES, minutes)
+
+    }
+
+}
