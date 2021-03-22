@@ -12,21 +12,20 @@ import android.provider.ContactsContract
 data class Contact(val id: String, val name: String, val phone: List<String>)
 
 fun ContentResolver.getContactPhone(): MutableList<Contact>? {
-    val cur = query(
+    val list =  query(
         ContactsContract.Contacts.CONTENT_URI,
         null, null, null, null
-    )
-    val list = cur?.run {
+    )?.run {
         val list = mutableListOf<Contact>()
         if (count > 0) {
-            while (cur.moveToNext()) {
+            while (moveToNext()) {
 
-                val id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID))
-                val name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-                Log.i(TAG, "Name: $name")
+                val id = getString(getColumnIndex(ContactsContract.Contacts._ID))
+                val name = getString(getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+
 
                 val phoneList = mutableListOf<String>()
-                if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                if (getInt(getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                     val pCur = query(
                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         null,
@@ -44,9 +43,9 @@ fun ContentResolver.getContactPhone(): MutableList<Contact>? {
                 list.add(Contact(id, name, phoneList.toList()))
             }
         }
+        close()
         return@run list
     }
-    cur?.close()
     return list
 
 }
